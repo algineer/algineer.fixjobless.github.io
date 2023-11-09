@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Fix Jobless Clips: Bulk Editor</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            /* Align content to the top of the page */
+            min-height: 100vh;
+            margin: 0;
+        }
+        
+        .main-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            /* Align textboxes to the top */
+        }
+        
+        .h1-container {
+            text-align: center;
+        }
+        
+        .textbox-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .textbox {
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 16px;
+            line-height: 1;
+            resize: none;
+            overflow-y: hidden;
+            /* Hide vertical scrollbar */
+        }
+        
+        .textbox:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .title {
+            font-size: 20px;
+        }
+        
+        .button-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="h1-container">
+            <h1>Fix Jobless Clips: Bulk Editor</h1>
+        </div>
+        <div class="container">
+            <div class="textbox-wrapper">
+                <div class="title">Jobless URLs</div>
+                <textarea id="inputURL" class=" textbox " rows="5 " cols="75 " placeholder="Enter URLs of Jobless Clips"></textarea>
+            </div>
+
+            <div class="textbox-wrapper ">
+                <div class="title ">Queue URL</div>
+                <textarea id="queue" class="textbox " rows="1 " cols="20 " placeholder="Enter Queue URL"></textarea>
+                <div class="button-wrapper ">
+                    <button onclick="transformURLs() " class="button ">Fix Jobless</button>
+                </div>
+            </div>
+
+            <div class="textbox-wrapper ">
+                <div class="title ">Corrected URLs</div>
+                <textarea id="outputURL" readonly class="textbox " rows="5 " cols="75 " placeholder="Corrected URL Output"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const textboxes = document.querySelectorAll('.textbox');
+
+        function updateCols() {
+            textboxes.forEach(textbox => {
+                const screenWidth = window.innerWidth;
+                const cols = Math.floor(screenWidth / 10 / 3); // Adjust the divisor for desired width
+                textbox.setAttribute('cols', cols);
+            });
+        }
+
+        // Initial cols update
+        updateCols();
+
+        // Update cols when the screen width changes
+        window.addEventListener('resize', updateCols);
+
+        textboxes.forEach(textbox => {
+            textbox.addEventListener('input', () => {
+                // Replace single newlines with double newlines
+                if (!textbox.value.includes('| --- |'))
+                    textbox.value = textbox.value.replace(/(?<!\n)\n(?!\n)/g, '\n\n');
+
+                textbox.style.height = 'auto'; // Reset the height to auto
+                textbox.style.height = textbox.scrollHeight + 'px'; // Set the height to fit content
+
+            });
+
+        });
+    </script>
+    <script>
+        function transformURLs() {
+
+            var oldURL = document.querySelector("#inputURL").value
+            var queue = document.querySelector("#queue").value
+            var newURL = document.querySelector("#outputURL")
+
+            if (oldURL && queue) {
+                var oldURL_list = []
+                if (!oldURL.includes('| --- |'))
+                    oldURL_list = oldURL.replace(' ', '').split("\n\n")
+                else
+                    oldURL_list = oldURL.replace(' ', '').split("\n")
+
+                var newJob = queue.split("?")[1].replace('job', "jobId").replace('project', "task")
+
+                var newURL_list = []
+
+                oldURL_list.forEach(e => {
+                    newURL_list.push(e.replace(/task=\w+/g, newJob))
+                })
+                if (!oldURL.includes('| --- |'))
+                    newURL.value = newURL_list.join('\n\n')
+                else
+                    newURL.value = newURL_list.join('\n')
+
+                newURL.style.height = 'auto'; // Reset the height to auto
+                newURL.style.height = newURL.scrollHeight + 'px'; // Set the height to fit content
+            }
+        }
+    </script>
+    <script></script>
+</body>
+
+</html>
