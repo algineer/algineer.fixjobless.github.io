@@ -27,7 +27,7 @@ textboxes.forEach(textbox => {
 
 });
 
-function transformURLs() {
+function fixJobless() {
 
     var oldURL = document.querySelector("#inputURL").value.trim()
     var queue = document.querySelector("#queue").value.trim()
@@ -64,6 +64,11 @@ function addClaimed() {
     var newURL = document.querySelector("#outputURL")
 
     if (oldURL) {
+
+        if (newURL.value) {
+            oldURL = newURL.value.trim()
+        }
+
         var oldURL_list = []
         if (!oldURL.includes('| --- |'))
             oldURL_list = oldURL.replace(' ', '').split("\n\n")
